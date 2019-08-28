@@ -1,8 +1,10 @@
 import React from 'react';
 import { Form, DatePicker, Input, Button, Select, Checkbox } from 'antd';
 import { connect }  from 'react-redux';
+import { Redirect, withRouter } from 'react-router-dom';
 
 import { addUser, changeUser } from '../actions/index';
+import {formatDate} from '../constance';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -15,20 +17,21 @@ export class UserCreator extends React.Component {
         gender: "",
         job: "",
         biography: "",
-        is_active: false
+        is_active: false,
+        redirect: false
     }
 
     userId = 0;
-
     isChangingUser = false;
 
     componentDidMount() {
-        console.log(this.props);
+        // console.log(this.props);
         const { users, match } = this.props;
         if(match.path !== '/create_user/') {
             this.userId = +match.params.id;
             const user = users.find(el => el.id === this.userId);
             this.isChangingUser = true;
+            debugger;
             this.props.form.setFieldsValue({
                 first_name: user.first_name,
                 last_name: user.last_name,
@@ -51,12 +54,18 @@ export class UserCreator extends React.Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
+                values = {...values, 
+                    birth_date: formatDate(new Date(values.birth_date)), 
+                    is_active: this.state.is_active
+                };
+                // console.log('Received values of form: ', values);
                 if(!this.isChangingUser) {
-                    this.props.addUser(this.state);
+                    this.setState({redirect: true});
+                    this.props.addUser(values);
                 } else {
-                    console.log('state', this.state);
-                    this.props.changeUser(this.state, this.userId);
+                    // console.log('state', this.state);
+                    this.setState({redirect: true});
+                    this.props.changeUser(values, this.state.userId);
                 }
             }
         });
@@ -125,6 +134,10 @@ export class UserCreator extends React.Component {
             rules: [{ type: 'object', required: true, message: 'Please select time!' }],
         };
         
+        if(this.state.redirect) {
+            return <Redirect to='/'/>;
+        } 
+
         return(
             <React.Fragment>
                 <Form {...formItemLayout} onSubmit={this.submitForm}>
@@ -199,4 +212,4 @@ const mapDispatchToProps = {
 
 const UserCreatorForm = Form.create({ name: 'register' })(UserCreator);
 
-export const UserCreatorContainer = connect(mapStateToProps, mapDispatchToProps)(UserCreatorForm);
+export const UserCreatorContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(UserCreatorForm));

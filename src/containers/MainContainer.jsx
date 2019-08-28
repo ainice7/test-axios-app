@@ -9,7 +9,7 @@ import '../assets/css/Main.css';
 import { UserContainer } from './UserContainer';
 import {UserCreatorContainer} from './UserCreatorContainer';
 
-const antIcon = <Icon type="loading" style={{ fontSize: 64 }} spin />;
+const antIcon = <Icon type="loading" style={{ fontSize: 128 }} spin />;
 
 class Main extends Component {
     componentDidMount() {

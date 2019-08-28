@@ -22,7 +22,7 @@ function App() {
             <Menu.Item key="2"><Link to='/create_user/'>Create User</Link></Menu.Item>
           </Menu>
         </Header>
-        <Content style={{ padding: '0 50px' }}>
+        <Content style={{ padding: '0 50px', textAlign: "center" }}>
           <MainContainer />
         </Content>
         <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
